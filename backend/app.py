@@ -37,11 +37,13 @@ def checkin():
 @app.route("/checkins", methods=["GET"])
 def get_checkins():
     entries = []
-    # Order results by timestamp (latest first)
     docs = db.collection("checkins").order_by("timestamp", direction=firestore.Query.DESCENDING).stream()
     for doc in docs:
         data = doc.to_dict()
         data["id"] = doc.id
+        # Convert Firestore Timestamp to ISO string for frontend
+        if "timestamp" in data and isinstance(data["timestamp"], datetime.datetime):
+            data["timestamp"] = data["timestamp"].isoformat()
         entries.append(data)
     return jsonify(entries)
 

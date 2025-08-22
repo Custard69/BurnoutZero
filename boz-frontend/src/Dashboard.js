@@ -42,9 +42,10 @@ const Dashboard = () => {
   if (chartInstance.current) chartInstance.current.destroy();
 
   // Sort check-ins by timestamp (oldest first)
-  const sortedCheckins = [...checkins].sort(
-    (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
-  );
+ const sortedCheckins = [...checkins].sort(
+  (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
+);
+
 
   const ctx = chartRef.current.getContext("2d");
   chartInstance.current = new Chart(ctx, {
