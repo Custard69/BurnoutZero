@@ -22,13 +22,14 @@ const Login = ({ onLogin }) => {
       let userData;
 
       if (userDoc.exists()) {
-        // ✅ User exists → update lastLogin
+        // ✅ User exists in Firestore → update lastLogin
         userData = userDoc.data();
         await updateDoc(userRef, {
           lastLogin: new Date().toISOString(),
         });
+        userData = { ...userData, lastLogin: new Date().toISOString() };
       } else {
-        // ⚡ User profile missing → create with defaults
+        // ⚡ Firestore profile missing → create with defaults
         userData = {
           email: user.email,
           createdAt: new Date().toISOString(),
@@ -39,7 +40,9 @@ const Login = ({ onLogin }) => {
         await setDoc(userRef, userData);
       }
 
-      onLogin({ ...user, profile: userData }); // Pass both auth + Firestore profile
+      // ✅ Return both Firebase Auth + Firestore data to parent
+      onLogin({ ...user, profile: userData });
+
     } catch (err) {
       setError(err.message);
     }
