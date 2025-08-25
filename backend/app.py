@@ -22,12 +22,16 @@ def checkin():
     mood = data.get("mood")
     stress = data.get("stress")
     sleep = data.get("sleep")
+    user_id = data.get("user_id")  # ✅ Get UID from frontend
 
-    # Store as Firestore Timestamp (not string) for ordering
+    if not user_id:
+        return jsonify({"success": False, "message": "Missing user_id"}), 400
+
     checkin_data = {
         "mood": int(mood),
         "stress": int(stress),
         "sleep": int(sleep),
+        "user_id": user_id,  # ✅ Store UID
         "timestamp": datetime.datetime.now()
     }
     db.collection("checkins").add(checkin_data)
@@ -36,16 +40,26 @@ def checkin():
 
 @app.route("/checkins", methods=["GET"])
 def get_checkins():
+    user_id = request.args.get("user_id")
+    if not user_id:
+        return jsonify({"success": False, "message": "Missing user_id"}), 400
+
     entries = []
-    docs = db.collection("checkins").order_by("timestamp", direction=firestore.Query.DESCENDING).stream()
-    for doc in docs:
-        data = doc.to_dict()
-        data["id"] = doc.id
-        # Convert Firestore Timestamp to ISO string for frontend
-        if "timestamp" in data and isinstance(data["timestamp"], datetime.datetime):
-            data["timestamp"] = data["timestamp"].isoformat()
-        entries.append(data)
-    return jsonify(entries)
+    try:
+        query = db.collection("checkins").where("user_id", "==", user_id).order_by("timestamp", direction=firestore.Query.DESCENDING)
+        docs = query.stream()
+
+        for doc in docs:
+            data = doc.to_dict()
+            data["id"] = doc.id
+            if "timestamp" in data and isinstance(data["timestamp"], datetime.datetime):
+                data["timestamp"] = data["timestamp"].isoformat()
+            entries.append(data)
+
+        return jsonify(entries)
+    except Exception as e:
+        print("🔥 Error in /checkins:", e)
+        return jsonify({"success": False, "message": str(e)}), 500
 
 
 if __name__ == "__main__":

@@ -1,5 +1,5 @@
-// src/components/CheckInForm.js
 import React, { useState } from "react";
+import { auth } from "../firebase"; // ✅ Import auth
 
 function CheckInForm() {
   const [mood, setMood] = useState(5);
@@ -9,7 +9,18 @@ function CheckInForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const entry = { mood, stress, sleep };
+    const user = auth.currentUser; // ✅ Get current user
+    if (!user) {
+      setMessage("❌ You must be logged in to submit a check-in.");
+      return;
+    }
+
+    const entry = {
+      mood,
+      stress,
+      sleep,
+      user_id: user.uid, // ✅ Include UID
+    };
 
     try {
       const res = await fetch("http://127.0.0.1:5000/checkin", {
@@ -35,37 +46,18 @@ function CheckInForm() {
     <div style={{ padding: "20px" }}>
       <h2>Daily Check-In</h2>
       <form onSubmit={handleSubmit}>
+        {/* Sliders */}
         <div style={{ marginBottom: "15px" }}>
           <label>Mood (1-10): {mood}</label><br />
-          <input
-            type="range"
-            min="1"
-            max="10"
-            value={mood}
-            onChange={(e) => setMood(Number(e.target.value))}
-          />
+          <input type="range" min="1" max="10" value={mood} onChange={(e) => setMood(Number(e.target.value))} />
         </div>
-
         <div style={{ marginBottom: "15px" }}>
           <label>Stress (1-10): {stress}</label><br />
-          <input
-            type="range"
-            min="1"
-            max="10"
-            value={stress}
-            onChange={(e) => setStress(Number(e.target.value))}
-          />
+          <input type="range" min="1" max="10" value={stress} onChange={(e) => setStress(Number(e.target.value))} />
         </div>
-
         <div style={{ marginBottom: "15px" }}>
           <label>Sleep (1-10): {sleep}</label><br />
-          <input
-            type="range"
-            min="1"
-            max="10"
-            value={sleep}
-            onChange={(e) => setSleep(Number(e.target.value))}
-          />
+          <input type="range" min="1" max="10" value={sleep} onChange={(e) => setSleep(Number(e.target.value))} />
         </div>
 
         <button type="submit">Submit</button>
