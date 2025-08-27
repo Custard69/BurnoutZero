@@ -74,5 +74,5 @@ const Signup = ({ onSignup }) => {
     </div>
   );
 };
-
+  
 export default Signup;

@@ -98,6 +98,10 @@ const Dashboard = () => {
     });
   }, [checkins]);
 
+
+
+  
+
   return (
     <div style={{ marginTop: "40px", textAlign: "left" }}>
       <h2>Burnout Dashboard</h2>
