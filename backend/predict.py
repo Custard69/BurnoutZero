@@ -5,4 +5,4 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 # Load trained model
-model = joblib.load("artifacts/xgb_burnout_model.pkl")
+model = joblib.load("artifacts/burnout_model_multiclass (2).pkl")

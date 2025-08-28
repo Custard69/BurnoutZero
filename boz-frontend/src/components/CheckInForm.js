@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { auth, db } from "../firebase"; // ✅ Import db for Firestore
+import { auth, db } from "../firebase";
 import { collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
 
 function CheckInForm() {
@@ -24,6 +24,9 @@ function CheckInForm() {
       sleep,
       work_hours_today: workHours,
       user_id: user.uid,
+      had_meeting_today: 0,        // default 0 for today
+      meeting_count_last_7d: 0,    // will calculate
+      screen_time_last_7d: 0       // will calculate
     };
 
     try {
@@ -46,21 +49,32 @@ function CheckInForm() {
       );
       const querySnapshot = await getDocs(q);
       const lastCheckins = [];
-      querySnapshot.forEach((doc) => {
-        lastCheckins.push(doc.data());
-      });
+      querySnapshot.forEach((doc) => lastCheckins.push(doc.data()));
 
-      // 3️⃣ Calculate features from last 7 days
+      // 3️⃣ Calculate features from last 7 check-ins
       const days = lastCheckins.length || 1; // prevent division by zero
-      const features = {
-          mood: mood,
-          stress: stress,
-          sleep: sleep,
-          work_hours: workHours,
-          meetings: 2,      // placeholder for now
-          screen_time: 5.5  // placeholder for now
-        };
+      const sum = lastCheckins.reduce((acc, c) => ({
+        mood: acc.mood + c.mood,
+        stress: acc.stress + c.stress,
+        sleep: acc.sleep + c.sleep,
+        work_hours: acc.work_hours + c.work_hours_today,
+        meeting_count: acc.meeting_count + (c.had_meeting_today ? 1 : 0),
+        screen_time: acc.screen_time + (c.screen_time_last_7d || 0)
+      }), { mood: 0, stress: 0, sleep: 0, work_hours: 0, meeting_count: 0, screen_time: 0 });
 
+      const features = {
+        mood,
+        stress,
+        sleep,
+        work_hours: workHours,                // maps state to backend
+        had_meeting_today: entry.had_meeting_today,
+        meeting_count_last_7d: sum.meeting_count,
+        screen_time_last_7d: sum.screen_time / days,
+        mean_mood_last_7d: sum.mood / days,
+        mean_stress_last_7d: sum.stress / days,
+        mean_sleep_last_7d: sum.sleep / days,
+        mean_work_hours_last_7d: sum.work_hours / days
+      };
 
       // 4️⃣ Call prediction API
       const predRes = await fetch("http://127.0.0.1:5000/predict", {
@@ -68,7 +82,6 @@ function CheckInForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_id: user.uid, features }),
       });
-
       const predData = await predRes.json();
       console.log("Prediction Response:", predData);
 
@@ -83,6 +96,7 @@ function CheckInForm() {
       setStress(5);
       setSleep(5);
       setWorkHours(8);
+
     } catch (error) {
       console.error("Error:", error);
       setMessage("❌ Error submitting check-in or getting prediction.");

@@ -12,6 +12,7 @@ import {
   Legend,
 } from "chart.js";
 
+// Register chart.js components
 Chart.register(
   CategoryScale,
   LinearScale,
@@ -28,6 +29,7 @@ const Dashboard = () => {
   const chartInstance = useRef(null);
   const [checkins, setCheckins] = useState([]);
 
+  // Fetch check-ins from backend for current user
   useEffect(() => {
     const user = auth.currentUser;
     if (!user) return;
@@ -41,10 +43,14 @@ const Dashboard = () => {
       .catch((err) => console.error(err));
   }, []);
 
+  // Draw chart whenever check-ins change
   useEffect(() => {
     if (!chartRef.current || checkins.length === 0) return;
+
+    // Destroy previous chart instance to avoid duplicates
     if (chartInstance.current) chartInstance.current.destroy();
 
+    // Sort check-ins by timestamp ascending
     const sortedCheckins = [...checkins].sort(
       (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
     );
@@ -75,6 +81,19 @@ const Dashboard = () => {
             borderColor: "green",
             fill: false,
           },
+          {
+            label: "Burnout Risk",
+            // Scale 0-1 to 0-10 for visual consistency
+            data: sortedCheckins.map((c) =>
+              c.burnout_probability
+                ? Number((c.burnout_probability * 10).toFixed(2))
+                : 0
+            ),
+            borderColor: "orange",
+            fill: false,
+            tension: 0.2,
+            pointHoverRadius: 6,
+          },
         ],
       },
       options: {
@@ -82,25 +101,30 @@ const Dashboard = () => {
         plugins: {
           title: { display: true, text: "Burnout Dashboard - Check-in Trends" },
           legend: { position: "top" },
-        },
-        scales: {
-          x: {
-            ticks: {
-              maxTicksLimit: 7, // ✅ Limit to 7 sections
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                if (context.dataset.label === "Burnout Risk") {
+                  // Show actual burnout % in tooltip
+                  const val = context.raw * 10; // 0-10 → 0-100%
+                  return `Burnout Risk: ${val.toFixed(2)}%`;
+                }
+                return `${context.dataset.label}: ${context.raw}`;
+              },
             },
           },
+        },
+        scales: {
+          x: { ticks: { maxTicksLimit: 7 } },
           y: {
             min: 0,
-            max: 10,
+            max: 10, // Keep all features on same scale
+            title: { display: true, text: "1–10 scale (Mood/Stress/Sleep), Burnout Risk scaled 0–10" },
           },
         },
       },
     });
   }, [checkins]);
-
-
-
-  
 
   return (
     <div style={{ marginTop: "40px", textAlign: "left" }}>
