@@ -65,40 +65,56 @@ from datetime import timedelta
 
 # Function to get meeting count for the last 7 days
 def get_meeting_count_last_7d(user_id):
-    # Retrieve credentials from Firestore
-    user_ref = db.collection('users').document(user_id).get()
-    creds_data = user_ref.to_dict().get('google_calendar_credentials')
-    
-    if not creds_data:
-        return 0
-        
-    creds = Credentials(**creds_data)
-    
-    # Refresh token if expired
-    if not creds.valid and creds.refresh_token:
-        creds.refresh(Request())
-        db.collection('users').document(user_id).update({
-            'google_calendar_credentials.token': creds.token
-        })
+    """
+    Fetch and store number of calendar events in the last 7 days for this user.
+    Also saves each event to Firestore.
+    """
+    try:
+        user_ref = db.collection("users").document(user_id).get()
+        creds_data = user_ref.to_dict().get("google_calendar_credentials")
+        if not creds_data:
+            return 0  # user not connected
 
-    service = build('calendar', 'v3', credentials=creds)
-    
-    now = datetime.datetime.utcnow().isoformat() + 'Z'
-    seven_days_ago = (datetime.datetime.utcnow() - timedelta(days=7)).isoformat() + 'Z'
-    
-    events_result = service.events().list(
-        calendarId='primary',
-        timeMin=seven_days_ago,
-        timeMax=now,
-        maxResults=2500, # A reasonable limit for 7 days
-        singleEvents=True,
-        orderBy='startTime'
-    ).execute()
-    
-    events = events_result.get('items', [])
-    meeting_count = len([e for e in events if 'recurringEventId' not in e]) # Exclude recurring events to avoid duplicates
-    
-    return meeting_count
+        creds = Credentials(**creds_data)
+        if not creds.valid and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+            db.collection("users").document(user_id).update({
+                "google_calendar_credentials.token": creds.token
+            })
+
+        service = build("calendar", "v3", credentials=creds)
+
+        now = datetime.datetime.utcnow().isoformat() + "Z"
+        seven_days_ago = (datetime.datetime.utcnow() - datetime.timedelta(days=7)).isoformat() + "Z"
+
+        events_result = service.events().list(
+            calendarId="primary",
+            timeMin=seven_days_ago,
+            timeMax=now,
+            singleEvents=True,
+            orderBy="startTime"
+        ).execute()
+
+        events = events_result.get("items", [])
+
+        # Store events in Firestore
+        events_collection = db.collection("users").document(user_id).collection("calendar_events")
+        for event in events:
+            event_id = event.get("id")
+            events_collection.document(event_id).set({
+                "summary": event.get("summary"),
+                "start": event.get("start"),
+                "end": event.get("end"),
+                "created": event.get("created"),
+                "updated": event.get("updated")
+            }, merge=True)
+
+        return len(events)
+
+    except Exception as e:
+        print(f"⚠️ Error fetching meeting count: {e}")
+        return 0
+
 
 
 # Function to get screen time for the last 7 days
@@ -448,12 +464,10 @@ def get_calendar_events():
     
     creds = Credentials(**creds_data)
     
-    # Check if the access token is expired and refresh it if needed
     if not creds.valid:
         if creds.expired and creds.refresh_token:
             try:
                 creds.refresh(Request())
-                # Update the token in Firestore to the new, valid token
                 db.collection('users').document(user_id).update({
                     'google_calendar_credentials.token': creds.token
                 })
@@ -464,15 +478,13 @@ def get_calendar_events():
     
     try:
         service = build("calendar", "v3", credentials=creds)
-        # Fetch events for the last 7 days to align with your model's features
+
         now = datetime.datetime.utcnow().isoformat() + 'Z'
-        seven_days_ago = (datetime.datetime.utcnow() - datetime.timedelta(days=7)).isoformat() + 'Z'
         
         events_result = service.events().list(
             calendarId="primary",
-            timeMin=seven_days_ago,
-            timeMax=now,
-            maxResults=100,  # A higher limit to get all relevant meetings
+            timeMin=now,              # start from NOW
+            maxResults=200,           # get enough results
             singleEvents=True,
             orderBy="startTime"
         ).execute()
@@ -484,16 +496,6 @@ def get_calendar_events():
         print(f"Error fetching calendar events: {e}")
         return jsonify({"error": f"Error fetching calendar events: {e}"}), 500
 
-
-def credentials_to_dict(credentials):
-    return {
-        "token": credentials.token,
-        "refresh_token": credentials.refresh_token,
-        "token_uri": credentials.token_uri,
-        "client_id": credentials.client_id,
-        "client_secret": credentials.client_secret,
-        "scopes": credentials.scopes
-    }
 
 
 
@@ -563,7 +565,51 @@ def add_calendar_event():
         return jsonify({"error": f"Error creating calendar event: {e}"}), 500
 
 
+@app.route("/calendar/event/delete", methods=["POST"])
+def delete_calendar_event():
+    data = request.json
+    user_id = data.get("user_id")
+    event_id = data.get("event_id")
 
+    if not user_id or not event_id:
+        return jsonify({"error": "Missing user_id or event_id"}), 400
+
+    user_ref = db.collection('users').document(user_id).get()
+    creds_data = user_ref.to_dict().get('google_calendar_credentials')
+
+    if not creds_data:
+        return jsonify({"error": "User not authenticated with Google"}), 401
+
+    creds = Credentials(**creds_data)
+
+    if not creds.valid:
+        if creds.expired and creds.refresh_token:
+            try:
+                creds.refresh(Request())
+                db.collection('users').document(user_id).update({
+                    'google_calendar_credentials.token': creds.token
+                })
+            except Exception as e:
+                return jsonify({"error": f"Failed to refresh token: {e}"}), 500
+        else:
+            return jsonify({"error": "Credentials are invalid and cannot be refreshed."}), 401
+
+    try:
+        service = build("calendar", "v3", credentials=creds)
+        service.events().delete(calendarId="primary", eventId=event_id).execute()
+        return jsonify({"success": True, "message": "Event deleted successfully!"})
+    except Exception as e:
+        print(f"Error deleting calendar event: {e}")
+        return jsonify({"error": f"Error deleting calendar event: {e}"}), 500
+
+
+
+
+
+@app.route("/test_calendar/<user_id>")
+def test_calendar(user_id):
+    count = get_meeting_count_last_7d(user_id)
+    return jsonify({"meetings_last_7_days": count})
 
     
 # ---------------------------
