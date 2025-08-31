@@ -66,7 +66,7 @@ function CheckInForm() {
         mood,
         stress,
         sleep,
-        work_hours: workHours,                // maps state to backend
+        work_hours_today: workHours, 
         had_meeting_today: entry.had_meeting_today,
         meeting_count_last_7d: sum.meeting_count,
         screen_time_last_7d: sum.screen_time / days,
@@ -80,8 +80,9 @@ function CheckInForm() {
       const predRes = await fetch("http://127.0.0.1:5000/predict", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: user.uid, features }),
+        body: JSON.stringify({ user_id: user.uid, ...features }),
       });
+
       const predData = await predRes.json();
       console.log("Prediction Response:", predData);
 
