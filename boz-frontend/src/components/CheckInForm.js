@@ -24,9 +24,9 @@ function CheckInForm() {
       sleep,
       work_hours_today: workHours,
       user_id: user.uid,
-      had_meeting_today: 0,        // default 0 for today
-      meeting_count_last_7d: 0,    // will calculate
-      screen_time_last_7d: 0       // will calculate
+      had_meeting_today: 0,
+      meeting_count_last_7d: 0,
+      screen_time_last_7d: 0
     };
 
     try {
@@ -52,7 +52,7 @@ function CheckInForm() {
       querySnapshot.forEach((doc) => lastCheckins.push(doc.data()));
 
       // 3️⃣ Calculate features from last 7 check-ins
-      const days = lastCheckins.length || 1; // prevent division by zero
+      const days = lastCheckins.length || 1;
       const sum = lastCheckins.reduce((acc, c) => ({
         mood: acc.mood + c.mood,
         stress: acc.stress + c.stress,
@@ -106,69 +106,189 @@ function CheckInForm() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Daily Check-In</h2>
-      <form onSubmit={handleSubmit}>
-        {/* Mood Slider */}
-        <div style={{ marginBottom: "15px" }}>
-          <label>Mood (1-10): {mood}</label><br />
-          <input
-            type="range"
-            min="1"
-            max="10"
-            value={mood}
-            onChange={(e) => setMood(Number(e.target.value))}
-          />
-        </div>
+    <div style={checkInStyles.container}>
+      <div style={checkInStyles.card}>
+        <h2 style={checkInStyles.heading}>Daily Check-In</h2>
+        <form onSubmit={handleSubmit} style={checkInStyles.form}>
+          <div style={checkInStyles.inputGroup}>
+            <label style={checkInStyles.label}>Mood (1-10):</label>
+            <input
+              type="range"
+              min="1"
+              max="10"
+              value={mood}
+              onChange={(e) => setMood(Number(e.target.value))}
+              style={checkInStyles.slider}
+            />
+            <span style={checkInStyles.sliderValue}>{mood}</span>
+          </div>
 
-        {/* Stress Slider */}
-        <div style={{ marginBottom: "15px" }}>
-          <label>Stress (1-10): {stress}</label><br />
-          <input
-            type="range"
-            min="1"
-            max="10"
-            value={stress}
-            onChange={(e) => setStress(Number(e.target.value))}
-          />
-        </div>
+          <div style={checkInStyles.inputGroup}>
+            <label style={checkInStyles.label}>Stress (1-10):</label>
+            <input
+              type="range"
+              min="1"
+              max="10"
+              value={stress}
+              onChange={(e) => setStress(Number(e.target.value))}
+              style={checkInStyles.slider}
+            />
+            <span style={checkInStyles.sliderValue}>{stress}</span>
+          </div>
 
-        {/* Sleep Slider */}
-        <div style={{ marginBottom: "15px" }}>
-          <label>Sleep (1-10): {sleep}</label><br />
-          <input
-            type="range"
-            min="1"
-            max="10"
-            value={sleep}
-            onChange={(e) => setSleep(Number(e.target.value))}
-          />
-        </div>
+          <div style={checkInStyles.inputGroup}>
+            <label style={checkInStyles.label}>Sleep (1-10):</label>
+            <input
+              type="range"
+              min="1"
+              max="10"
+              value={sleep}
+              onChange={(e) => setSleep(Number(e.target.value))}
+              style={checkInStyles.slider}
+            />
+            <span style={checkInStyles.sliderValue}>{sleep}</span>
+          </div>
 
-        {/* Work Hours */}
-        <div style={{ marginBottom: "15px" }}>
-          <label>Work Hours Today:</label><br />
-          <input
-            type="number"
-            min="0"
-            max="24"
-            value={workHours}
-            onChange={(e) => setWorkHours(Number(e.target.value))}
-            required
-          />
-        </div>
+          <div style={checkInStyles.inputGroup}>
+            <label style={checkInStyles.label}>Work Hours Today:</label>
+            <input
+              type="number"
+              min="0"
+              max="24"
+              value={workHours}
+              onChange={(e) => setWorkHours(Number(e.target.value))}
+              required
+              style={checkInStyles.input}
+            />
+          </div>
 
-        <button type="submit">Submit</button>
-      </form>
+          <button type="submit" style={checkInStyles.primaryButton}>
+            Submit Check-in
+          </button>
+        </form>
+      </div>
 
-      {message && <p style={{ marginTop: "10px", fontWeight: "bold" }}>{message}</p>}
-      {burnoutProb !== null && (
-        <p style={{ marginTop: "10px", fontWeight: "bold", color: "orange" }}>
-          🔥 Predicted Burnout Risk: {burnoutProb}%
-        </p>
-      )}
+      <div style={checkInStyles.resultCard}>
+        {message && <p style={checkInStyles.message}>{message}</p>}
+        {burnoutProb !== null && (
+          <p style={checkInStyles.burnoutRisk}>
+            Predicted Burnout Risk: <span style={{ color: '#ff6b6b', fontWeight: 'bold' }}>{burnoutProb}%</span>
+          </p>
+        )}
+      </div>
     </div>
   );
 }
+
+const checkInStyles = {
+  container: {
+    padding: '20px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '20px',
+  },
+  card: {
+    width: '100%',
+    maxWidth: '500px',
+    backgroundColor: '#2e2e4a',
+    borderRadius: '20px',
+    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5)',
+    padding: '40px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    textAlign: 'center',
+  },
+  heading: {
+    fontSize: '2rem',
+    fontWeight: 'bold',
+    color: '#ffffff',
+    marginBottom: '20px',
+  },
+  form: {
+    width: '100%',
+  },
+  inputGroup: {
+    marginBottom: '20px',
+    textAlign: 'left',
+    width: '100%',
+  },
+  label: {
+    display: 'block',
+    fontSize: '1rem',
+    fontWeight: '500',
+    color: '#a0a0c0',
+    marginBottom: '8px',
+  },
+  slider: {
+    width: 'calc(100% - 40px)',
+    height: '8px',
+    background: '#4a4a6e',
+    borderRadius: '5px',
+    outline: 'none',
+    cursor: 'pointer',
+    '-webkit-appearance': 'none',
+    '::-webkit-slider-thumb': {
+      '-webkit-appearance': 'none',
+      width: '20px',
+      height: '20px',
+      background: '#6a67f0',
+      borderRadius: '50%',
+      cursor: 'pointer',
+      border: '2px solid #ffffff'
+    },
+  },
+  sliderValue: {
+    marginLeft: '10px',
+    color: '#ffffff',
+    fontWeight: 'bold',
+  },
+  input: {
+    width: 'calc(100% - 24px)',
+    padding: '12px',
+    fontSize: '1rem',
+    borderRadius: '10px',
+    border: '1px solid #4a4a6e',
+    backgroundColor: '#3b3b5c',
+    color: '#ffffff',
+    outline: 'none',
+    transition: 'border-color 0.3s ease',
+  },
+  primaryButton: {
+    width: '100%',
+    padding: '14px',
+    fontSize: '1.1rem',
+    fontWeight: 'bold',
+    color: '#ffffff',
+    background: 'linear-gradient(45deg, #6a67f0, #9167f0)',
+    border: 'none',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    marginTop: '20px',
+    transition: 'background 0.3s ease, transform 0.2s ease',
+  },
+  resultCard: {
+    width: '100%',
+    maxWidth: '500px',
+    backgroundColor: '#2e2e4a',
+    borderRadius: '20px',
+    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5)',
+    padding: '20px',
+    textAlign: 'center',
+  },
+  message: {
+    marginTop: '0',
+    color: '#40c057',
+    fontWeight: 'bold',
+    fontSize: '1rem',
+  },
+  burnoutRisk: {
+    marginTop: '0',
+    color: '#e0e0e0',
+    fontWeight: 'bold',
+    fontSize: '1.2rem',
+  },
+};
 
 export default CheckInForm;
