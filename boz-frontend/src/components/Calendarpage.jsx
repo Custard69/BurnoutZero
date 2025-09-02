@@ -4,6 +4,9 @@ import moment from "moment";
 import { getAuth } from "firebase/auth";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import GoogleConnect from "./GoogleConnect";
+import { grid } from 'ldrs';
+grid.register();
+
 
 const localizer = momentLocalizer(moment);
 
@@ -64,7 +67,7 @@ const toolbarStyles = {
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: "20px",
-    backgroundColor: '#3b3b5c',
+    backgroundColor: '#rgb(12 12 12)',
     padding: "15px",
     borderRadius: "15px",
     boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)",
@@ -227,7 +230,15 @@ const CalendarPage = () => {
     }
   };
 
-  if (loading) return <p style={pageStyles.loading}>Loading calendar...</p>;
+ if (loading) {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+      <l-grid size="60" speed="1.5" color="#ffffff"></l-grid>
+
+    </div>
+  );
+}
+
   if (needsConnection)
     return (
       <div style={pageStyles.container}>
@@ -372,7 +383,7 @@ const CalendarPage = () => {
 const pageStyles = {
   container: {
     padding: '20px',
-    background: '#1a1a2e',
+    background: '#rgb(12 12 12)',
     color: '#e0e0e0',
     minHeight: '100vh',
     boxSizing: 'border-box',

@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+/* Global Styles for a futuristic, eye-friendly theme */
+body {
+  background-color: #121212;
+  color: #e0e0e0;
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  margin: 0;
+  padding: 40px 20px;
+}
+
+.timer-container {
+  text-align: center;
+  padding: 40px;
+  background-color: #1e1e1e;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  max-width: 800px;
+  width: 100%;
+}
+
+h1, h3, h4 {
+  color: #00c8ff;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Flip-Clock Timer Display */
+.timer-display {
+  background-color: #000;
+  color: #fff;
+  font-family: 'Digital-7', monospace;
+  font-size: 10vw; /* Responsive font size */
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 15px;
+  margin: 20px 0;
+  display: inline-block;
+  letter-spacing: 5px;
+  min-width: 400px;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1), 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+@media (min-width: 768px) {
+  .timer-display {
+    font-size: 80px;
+  }
+}
+
+/* Form Elements */
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-field,
+.input-number {
+  background-color: #2a2a2a;
+  color: #fff;
+  border: 1px solid #00c8ff;
+  border-radius: 8px;
+  padding: 12px 15px;
+  margin: 0 10px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.input-field:focus,
+.input-number:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+}
+
+.input-number {
+  width: 60px;
+  text-align: center;
+}
+
+/* Buttons */
+.button-container {
+  margin-top: 20px;
+}
+
+.action-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  margin: 0 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.action-button:hover:not(:disabled) {
+  background-color: #00c8ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 200, 255, 0.4);
+}
+
+.action-button:disabled {
+  background-color: #4a4a4a;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* History and Stats */
+.history-list {
+  list-style-type: none;
+  padding: 0;
+  text-align: left;
+}
+
+.history-list li {
+  background-color: #2a2a2a;
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  border-left: 3px solid #00c8ff;
+}
+
+/* Popup/Modal */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: #1e1e1e;
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid #00c8ff;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Use this font for the timer only. You'll need to find and import it. */
+/* You can find 'Digital-7' and similar fonts on sites like Fontspring or by downloading them locally. */
+/* Alternatively, a web-safe monospace font is a good fallback. */
+
+/* Recommended:
+To get the exact flip-clock font, you'll need to use a service like Font Squirrel to generate a web font and include it. For a quick start, a simple `monospace` font can be used as a close alternative. */

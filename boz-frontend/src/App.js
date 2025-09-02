@@ -34,10 +34,9 @@ const styles = {
   mainContainer: {
     minHeight: "100vh",
     width: "100%",
-    background: "linear-gradient(45deg, #0a0a1a, #1a1a2e, #2e2e4a)",
-    fontFamily:
-      'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-    color: "#e0e0e0",
+    background: "#0b0c10",
+    fontFamily: 'Roboto, sans-serif',
+    color: "#c5c6c7",
     padding: "0",
     boxSizing: "border-box",
   },
@@ -45,29 +44,36 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "15px 40px",
-    background: "linear-gradient(90deg, #1e3a8a, #4a4a6e)",
-    color: "white",
+    padding: "20px 40px",
+    background: "#1f2833",
+    color: "#c5c6c7",
     boxShadow: "0 4px 15px rgba(0, 0, 0, 0.4)",
+    position: "sticky",
+    top: 0,
+    zIndex: 100,
   },
   logo: {
     fontWeight: "bold",
     fontSize: "24px",
     letterSpacing: "1px",
-    textShadow: "0 0 5px rgba(255,255,255,0.2)",
+    textShadow: "0 0 5px #66fcf1",
+    color: "#66fcf1",
   },
   nav: {
     display: "flex",
     gap: "20px",
   },
   navLink: {
-    color: "white",
+    color: "#c5c6c7",
     textDecoration: "none",
     fontWeight: "500",
     padding: "8px 15px",
     borderRadius: "8px",
-    transition: "background-color 0.3s ease, transform 0.2s ease",
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    transition: "background-color 0.3s ease, color 0.3s ease",
+    ":hover": {
+      backgroundColor: "#2a3440",
+      color: "#66fcf1",
+    },
   },
   userSection: {
     display: "flex",
@@ -76,10 +82,10 @@ const styles = {
   },
   userEmail: {
     fontSize: "0.9rem",
-    color: "#c0c0e0",
+    color: "#c5c6c7",
   },
   logoutBtn: {
-    backgroundColor: "#f87171",
+    backgroundColor: "#ef4444",
     border: "none",
     padding: "8px 15px",
     borderRadius: "8px",
@@ -98,6 +104,7 @@ const styles = {
     width: "100%",
     padding: "20px",
     boxSizing: "border-box",
+    background: "#0b0c10",
   },
   unauthHeader: {
     marginBottom: "30px",
@@ -106,19 +113,19 @@ const styles = {
   unauthTitle: {
     fontSize: "2.5rem",
     fontWeight: "bold",
-    color: "#ffffff",
+    color: "#66fcf1",
     marginBottom: "8px",
   },
   toggleText: {
     fontSize: "1rem",
-    color: "#a0a0c0",
+    color: "#c5c6c7",
     marginTop: "20px",
     textAlign: "center",
   },
   toggleButton: {
     background: "none",
     border: "none",
-    color: "#6a67f0",
+    color: "#66fcf1",
     fontWeight: "bold",
     cursor: "pointer",
     textDecoration: "underline",
@@ -144,7 +151,7 @@ function App() {
     setUser(null);
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p style={{ textAlign: "center", padding: "40px", color: "#c5c6c7" }}>Loading...</p>;
 
   // If not logged in, show login/signup only
   if (!user) {
@@ -173,23 +180,23 @@ function App() {
     <Router>
       <div style={styles.mainContainer}>
         <Header user={user} handleLogout={handleLogout} />
-        <div style={{ padding: "20px" }}>
+        <div style={{ padding: "40px" }}>
           <Routes>
             <Route
               path="/dashboard"
               element={
-                <div>
+                <div style={{ padding: "20px" }}>
                   <CheckInForm />
                   <Dashboard />
                 </div>
               }
             />
             <Route path="/calendar" element={<CalendarPage />} />
-            <Route path="/focus" element={<FocusTimerPage />} /> {/* ⬅️ NEW */}
+            <Route path="/focus" element={<FocusTimerPage />} />
             <Route path="/placeholder1" element={<PlaceholderPage title="Placeholder 1" />} />
             <Route path="/placeholder2" element={<PlaceholderPage title="Placeholder 2" />} />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="*" element={<p>Page not found</p>} />
+            <Route path="*" element={<p style={{ textAlign: "center", marginTop: "50px", color: "#ef4444" }}>404 | Page not found</p>} />
           </Routes>
         </div>
       </div>
