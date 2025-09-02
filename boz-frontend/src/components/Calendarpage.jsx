@@ -7,10 +7,9 @@ import GoogleConnect from "./GoogleConnect";
 import { grid } from 'ldrs';
 grid.register();
 
-
 const localizer = momentLocalizer(moment);
 
-const CustomToolbar = ({ label, onNavigate, date, setDate }) => {
+const CustomToolbar = ({ label, onNavigate, date, setDate, onView }) => {
   const handleMonthChange = (e) => {
     const newMonth = parseInt(e.target.value);
     const newDate = new Date(date);
@@ -39,6 +38,11 @@ const CustomToolbar = ({ label, onNavigate, date, setDate }) => {
 
       <div style={toolbarStyles.viewSelector}>
         <span style={toolbarStyles.label}>{label}</span>
+        <div style={{display: 'flex', gap: '5px'}}>
+          <button style={toolbarStyles.viewButton} onClick={() => onView('month')}>Month</button>
+          <button style={toolbarStyles.viewButton} onClick={() => onView('week')}>Week</button>
+          <button style={toolbarStyles.viewButton} onClick={() => onView('day')}>Day</button>
+        </div>
       </div>
 
       <div style={toolbarStyles.dateSelector}>
@@ -60,6 +64,12 @@ const CustomToolbar = ({ label, onNavigate, date, setDate }) => {
     </div>
   );
 };
+
+const Event = ({ event }) => (
+    <span style={{ fontSize: '0.8rem', fontWeight: 'bold' }}>
+        {moment(event.start).format('h:mm A')} - {event.title}
+    </span>
+);
 
 const toolbarStyles = {
   container: {
@@ -118,6 +128,16 @@ const toolbarStyles = {
     padding: "8px 12px",
     fontSize: "1rem",
   },
+  viewButton: {
+    backgroundColor: "#3b3b5c",
+    color: "#ffffff",
+    border: "1px solid #4a4a6e",
+    borderRadius: "8px",
+    padding: "4px 8px",
+    cursor: "pointer",
+    fontSize: "0.8rem",
+    fontWeight: "500",
+  },
 };
 
 const CalendarPage = () => {
@@ -125,8 +145,8 @@ const CalendarPage = () => {
   const [loading, setLoading] = useState(true);
   const [needsConnection, setNeedsConnection] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
-
   const [messageBox, setMessageBox] = useState(null);
+  const [view, setView] = useState(Views.MONTH);
 
   const auth = getAuth();
   const userId = auth.currentUser?.uid;
@@ -134,30 +154,37 @@ const CalendarPage = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       if (!userId) return;
-
       const res = await fetch(
         `http://localhost:5000/calendar/events?user_id=${userId}`
       );
       const data = await res.json();
-
       if (data.error) {
         if (data.error.includes("not authenticated")) setNeedsConnection(true);
         setLoading(false);
         return;
       }
+      const mappedEvents = data.map((e) => {
+        const isAllDay = !e.start.dateTime;
+        const start = new Date(e.start.dateTime || e.start.date);
+        let end = new Date(e.end.dateTime || e.end.date);
 
-      const mappedEvents = data.map((e) => ({
-        id: e.id,
-        title: e.summary,
-        start: new Date(e.start.dateTime || e.start.date),
-        end: new Date(e.end.dateTime || e.end.date),
-        allDay: !e.start.dateTime,
-      }));
+        if (isAllDay) {
+          // Google all-day events end at the *next* day -> adjust back by 1 ms
+          end = new Date(end.getTime() - 1);
+        }
+
+        return {
+          id: e.id,
+          title: e.summary,
+          start,
+          end,
+          allDay: isAllDay,
+        };
+      });
 
       setEvents(mappedEvents);
       setLoading(false);
     };
-
     fetchEvents();
   }, [userId]);
 
@@ -172,18 +199,28 @@ const CalendarPage = () => {
 
   const handleSelectEvent = (event) => {
     setMessageBox({
-      type: 'delete',
-      title: 'Delete Event',
-      message: `Are you sure you want to delete "${event.title}"?`,
-      event,
+      type: 'details',
+      title: 'Event Details',
+      message: event,
     });
   };
 
   const handleAddEvent = async (title, slotInfo) => {
+    const startTime = document.getElementById("event-start-input").value;
+    const endTime = document.getElementById("event-end-input").value;
+
+    const start = new Date(slotInfo.start);
+    const [sh, sm] = startTime.split(":");
+    start.setHours(sh, sm, 0, 0);
+
+    const end = new Date(slotInfo.end);
+    const [eh, em] = endTime.split(":");
+    end.setHours(eh, em, 0, 0);
+
     const newEvent = {
       summary: title,
-      start: { dateTime: slotInfo.start.toISOString(), timeZone: "UTC" },
-      end: { dateTime: slotInfo.end.toISOString(), timeZone: "UTC" },
+      start: { dateTime: start.toISOString(), timeZone: "UTC" },
+      end: { dateTime: end.toISOString(), timeZone: "UTC" },
       description: "",
     };
 
@@ -202,8 +239,8 @@ const CalendarPage = () => {
         {
           id: data.event_id,
           title,
-          start: new Date(slotInfo.start),
-          end: new Date(slotInfo.end),
+          start: new Date(start),
+          end: new Date(end),
         },
       ]);
       setMessageBox({ type: 'info', title: 'Success', message: 'Event added successfully!' });
@@ -230,14 +267,13 @@ const CalendarPage = () => {
     }
   };
 
- if (loading) {
-  return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-      <l-grid size="60" speed="1.5" color="#ffffff"></l-grid>
-
-    </div>
-  );
-}
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+        <l-grid size="10" speed="1.5" color="#ffffff"></l-grid>
+      </div>
+    );
+  }
 
   if (needsConnection)
     return (
@@ -268,12 +304,12 @@ const CalendarPage = () => {
             border-bottom: 1px solid #4a4a6e;
             color: #ffffff;
             font-weight: bold;
-            border-top: none; /* Removed top border */
+            border-top: none;
           }
           .rbc-day-bg {
             background-color: #2e2e4a;
-            border-left: none !important; /* Removed left border */
-            border-bottom: none !important; /* Removed bottom border */
+            border-left: none !important;
+            border-bottom: none !important;
           }
           .rbc-day-bg.rbc-off-range-bg {
             background-color: #28283a;
@@ -296,7 +332,13 @@ const CalendarPage = () => {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
             font-weight: bold;
             color: #ffffff;
-            opacity: 1; /* Ensure full opacity */
+            opacity: 1;
+            padding: 2px 5px;
+            margin-bottom: 2px;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
           .rbc-more-link {
             background: linear-gradient(45deg, #ff8a00, #ffc700);
@@ -321,13 +363,15 @@ const CalendarPage = () => {
           selectable
           onSelectSlot={handleSelectSlot}
           onSelectEvent={handleSelectEvent}
-          views={["month"]}
+          views={[Views.MONTH, Views.WEEK, Views.DAY]}
           defaultView={Views.MONTH}
           components={{
             toolbar: (props) => (
-              <CustomToolbar {...props} date={currentDate} setDate={setCurrentDate} />
+              <CustomToolbar {...props} date={currentDate} setDate={setCurrentDate} onView={setView} />
             ),
+            event: Event,
           }}
+          onView={(view) => setView(view)}
         />
       </div>
 
@@ -335,16 +379,55 @@ const CalendarPage = () => {
         <div style={pageStyles.overlay}>
           <div style={pageStyles.messageBox}>
             <h3 style={pageStyles.messageBoxTitle}>{messageBox.title}</h3>
-            <p style={pageStyles.messageBoxText}>{messageBox.message}</p>
             {messageBox.type === 'add' && (
-              <input
-                type="text"
-                placeholder="Event title"
-                style={pageStyles.messageBoxInput}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleAddEvent(e.target.value, messageBox.slotInfo);
-                }}
-              />
+              <>
+                <p style={pageStyles.messageBoxText}>Enter event title:</p>
+                <input
+                  type="text"
+                  placeholder="Event title"
+                  style={pageStyles.messageBoxInput}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleAddEvent(
+                      e.target.value,
+                      messageBox.slotInfo
+                    );
+                  }}
+                />
+                <div style={{display: 'flex', gap: '10px', width: '100%', justifyContent: 'space-between'}}>
+                  <div style={{flex: 1}}>
+                    <label style={pageStyles.messageBoxText}>Start Time:</label>
+                    <input
+                      type="time"
+                      defaultValue={moment(messageBox.slotInfo.start).format("HH:mm")}
+                      style={pageStyles.messageBoxInput}
+                      id="event-start-input"
+                    />
+                  </div>
+                  <div style={{flex: 1}}>
+                    <label style={pageStyles.messageBoxText}>End Time:</label>
+                    <input
+                      type="time"
+                      defaultValue={moment(messageBox.slotInfo.end).format("HH:mm")}
+                      style={pageStyles.messageBoxInput}
+                      id="event-end-input"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+            {messageBox.type === 'details' && (
+                <>
+                    <h3 style={pageStyles.messageBoxTitle}>{messageBox.message.title}</h3>
+                    <p style={{...pageStyles.messageBoxText, marginBottom: '0.5rem', fontWeight: 'bold'}}>
+                      Start: {moment(messageBox.message.start).format('LLL')}
+                    </p>
+                    <p style={{...pageStyles.messageBoxText, marginTop: '0', fontWeight: 'bold'}}>
+                      End: {moment(messageBox.message.end).format('LLL')}
+                    </p>
+                    <p style={{...pageStyles.messageBoxText, fontStyle: 'italic', marginTop: '1rem'}}>
+                      {messageBox.message.description || 'No description provided.'}
+                    </p>
+                </>
             )}
             <div style={pageStyles.messageBoxButtons}>
               {messageBox.type === 'add' && (
@@ -358,10 +441,10 @@ const CalendarPage = () => {
                   Add
                 </button>
               )}
-              {messageBox.type === 'delete' && (
+              {messageBox.type === 'details' && (
                 <button
-                  style={pageStyles.messageBoxButton}
-                  onClick={() => handleDeleteEvent(messageBox.event)}
+                  style={{...pageStyles.messageBoxButton, backgroundColor: '#ef4444'}}
+                  onClick={() => handleDeleteEvent(messageBox.message)}
                 >
                   Delete
                 </button>
@@ -383,7 +466,7 @@ const CalendarPage = () => {
 const pageStyles = {
   container: {
     padding: '20px',
-    background: '#rgb(12 12 12)',
+    background: '#121212',
     color: '#e0e0e0',
     minHeight: '100vh',
     boxSizing: 'border-box',
@@ -455,7 +538,7 @@ const pageStyles = {
     marginBottom: '20px',
   },
   messageBoxInput: {
-    width: 'calc(100% - 20px)',
+    width: '100%',
     padding: '10px',
     backgroundColor: '#4a4a6e',
     border: '1px solid #6a67f0',
