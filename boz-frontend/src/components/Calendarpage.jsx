@@ -270,7 +270,7 @@ const CalendarPage = () => {
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-        <l-grid size="10" speed="1.5" color="#ffffff"></l-grid>
+        <l-grid size="90" speed="1.5" color="#ffffff"></l-grid>
       </div>
     );
   }
