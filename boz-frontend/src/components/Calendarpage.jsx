@@ -247,6 +247,7 @@ const CalendarPage = () => {
     } else {
       setMessageBox({ type: 'error', title: 'Error', message: 'Error: ' + data.error });
     }
+
   };
 
   const handleDeleteEvent = async (event) => {
@@ -275,12 +276,25 @@ const CalendarPage = () => {
     );
   }
 
+  // ✅ Updated Google Connect Page
   if (needsConnection)
     return (
-      <div style={pageStyles.container}>
-        <div style={pageStyles.card}>
-          <h2 style={pageStyles.heading}>Connect your Google Calendar</h2>
-          <GoogleConnect />
+      <div style={{ ...pageStyles.container, justifyContent: 'center' }}>
+        <div style={{ 
+          ...pageStyles.card, 
+          maxWidth: '500px', 
+          textAlign: 'center',
+          background: 'linear-gradient(135deg, #6a67f0, #3b3b5c)', 
+          boxShadow: '0 15px 40px rgba(0,0,0,0.6)',
+          padding: '50px 30px'
+        }}>
+          <h2 style={{ ...pageStyles.heading, color: '#fff', fontSize: '2rem', marginBottom: '20px' }}>
+            Connect Your Google Calendar
+          </h2>
+          <p style={{ color: '#dcdcdc', marginBottom: '30px', fontSize: '1rem' }}>
+            To view and manage your events, please connect your Google Calendar account.
+          </p>
+          <GoogleConnect onSuccess={() => setMessageBox({ type: 'info', title: 'Success', message: 'Google Calendar connected successfully!' })} />
         </div>
       </div>
     );
@@ -376,89 +390,102 @@ const CalendarPage = () => {
       </div>
 
       {messageBox && (
-        <div style={pageStyles.overlay}>
-          <div style={pageStyles.messageBox}>
-            <h3 style={pageStyles.messageBoxTitle}>{messageBox.title}</h3>
-            {messageBox.type === 'add' && (
-              <>
-                <p style={pageStyles.messageBoxText}>Enter event title:</p>
-                <input
-                  type="text"
-                  placeholder="Event title"
-                  style={pageStyles.messageBoxInput}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleAddEvent(
-                      e.target.value,
-                      messageBox.slotInfo
-                    );
-                  }}
-                />
-                <div style={{display: 'flex', gap: '10px', width: '100%', justifyContent: 'space-between'}}>
-                  <div style={{flex: 1}}>
-                    <label style={pageStyles.messageBoxText}>Start Time:</label>
-                    <input
-                      type="time"
-                      defaultValue={moment(messageBox.slotInfo.start).format("HH:mm")}
-                      style={pageStyles.messageBoxInput}
-                      id="event-start-input"
-                    />
-                  </div>
-                  <div style={{flex: 1}}>
-                    <label style={pageStyles.messageBoxText}>End Time:</label>
-                    <input
-                      type="time"
-                      defaultValue={moment(messageBox.slotInfo.end).format("HH:mm")}
-                      style={pageStyles.messageBoxInput}
-                      id="event-end-input"
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-            {messageBox.type === 'details' && (
-                <>
-                    <h3 style={pageStyles.messageBoxTitle}>{messageBox.message.title}</h3>
-                    <p style={{...pageStyles.messageBoxText, marginBottom: '0.5rem', fontWeight: 'bold'}}>
-                      Start: {moment(messageBox.message.start).format('LLL')}
-                    </p>
-                    <p style={{...pageStyles.messageBoxText, marginTop: '0', fontWeight: 'bold'}}>
-                      End: {moment(messageBox.message.end).format('LLL')}
-                    </p>
-                    <p style={{...pageStyles.messageBoxText, fontStyle: 'italic', marginTop: '1rem'}}>
-                      {messageBox.message.description || 'No description provided.'}
-                    </p>
-                </>
-            )}
-            <div style={pageStyles.messageBoxButtons}>
-              {messageBox.type === 'add' && (
-                <button
-                  style={pageStyles.messageBoxButton}
-                  onClick={() => handleAddEvent(
-                    document.querySelector(`input[placeholder="Event title"]`).value,
-                    messageBox.slotInfo
-                  )}
-                >
-                  Add
-                </button>
-              )}
-              {messageBox.type === 'details' && (
-                <button
-                  style={{...pageStyles.messageBoxButton, backgroundColor: '#ef4444'}}
-                  onClick={() => handleDeleteEvent(messageBox.message)}
-                >
-                  Delete
-                </button>
-              )}
-              <button
-                style={{...pageStyles.messageBoxButton, backgroundColor: '#4a4a6e' }}
-                onClick={() => setMessageBox(null)}
-              >
-                Cancel
-              </button>
+  <div style={pageStyles.overlay}>
+    <div style={pageStyles.messageBox}>
+      <h3 style={pageStyles.messageBoxTitle}>{messageBox.title}</h3>
+
+      {/* Add Event Form */}
+      {messageBox.type === 'add' && (
+        <>
+          <p style={pageStyles.messageBoxText}>Enter event title:</p>
+          <input
+            type="text"
+            placeholder="Event title"
+            style={pageStyles.messageBoxInput}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleAddEvent(
+                e.target.value,
+                messageBox.slotInfo
+              );
+            }}
+          />
+          <div style={{display: 'flex', gap: '10px', width: '100%', justifyContent: 'space-between'}}>
+            <div style={{flex: 1}}>
+              <label style={pageStyles.messageBoxText}>Start Time:</label>
+              <input
+                type="time"
+                defaultValue={moment(messageBox.slotInfo.start).format("HH:mm")}
+                style={pageStyles.messageBoxInput}
+                id="event-start-input"
+              />
+            </div>
+            <div style={{flex: 1}}>
+              <label style={pageStyles.messageBoxText}>End Time:</label>
+              <input
+                type="time"
+                defaultValue={moment(messageBox.slotInfo.end).format("HH:mm")}
+                style={pageStyles.messageBoxInput}
+                id="event-end-input"
+              />
             </div>
           </div>
-        </div>
+        </>
       )}
+
+      {/* Event Details */}
+      {messageBox.type === 'details' && (
+        <>
+          <h3 style={pageStyles.messageBoxTitle}>{messageBox.message.title}</h3>
+          <p style={{...pageStyles.messageBoxText, marginBottom: '0.5rem', fontWeight: 'bold'}}>
+            Start: {moment(messageBox.message.start).format('LLL')}
+          </p>
+          <p style={{...pageStyles.messageBoxText, marginTop: '0', fontWeight: 'bold'}}>
+            End: {moment(messageBox.message.end).format('LLL')}
+          </p>
+          <p style={{...pageStyles.messageBoxText, fontStyle: 'italic', marginTop: '1rem'}}>
+            {messageBox.message.description || 'No description provided.'}
+          </p>
+        </>
+      )}
+
+      {/* ✅ Info / Success Messages */}
+      {messageBox.type === 'info' && (
+        <p style={{...pageStyles.messageBoxText, color: '#4ade80', fontWeight: 'bold'}}>
+          {messageBox.message}
+        </p>
+      )}
+
+      <div style={pageStyles.messageBoxButtons}>
+        {messageBox.type === 'add' && (
+          <button
+            style={pageStyles.messageBoxButton}
+            onClick={() => handleAddEvent(
+              document.querySelector(`input[placeholder="Event title"]`).value,
+              messageBox.slotInfo
+            )}
+          >
+            Add
+          </button>
+        )}
+        {messageBox.type === 'details' && (
+          <button
+            style={{...pageStyles.messageBoxButton, backgroundColor: '#ef4444'}}
+            onClick={() => handleDeleteEvent(messageBox.message)}
+          >
+            Delete
+          </button>
+        )}
+        <button
+          style={{...pageStyles.messageBoxButton, backgroundColor: '#4a4a6e' }}
+          onClick={() => setMessageBox(null)}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };
@@ -494,14 +521,11 @@ const pageStyles = {
     marginBottom: '20px',
   },
   calendar: {
-    height: '600px',
+    height: '700px',
     width: '100%',
-    color: '#e0e0e0',
-  },
-  loading: {
-    color: '#ffffff',
-    textAlign: 'center',
-    fontSize: '1.2rem',
+    backgroundColor: '#2e2e4a',
+    borderRadius: '20px',
+    padding: '10px',
   },
   overlay: {
     position: 'fixed',
@@ -509,60 +533,48 @@ const pageStyles = {
     left: 0,
     width: '100%',
     height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1000,
   },
   messageBox: {
-    backgroundColor: '#3b3b5c',
+    backgroundColor: '#1e1e3f',
     padding: '30px',
     borderRadius: '15px',
-    boxShadow: '0 5px 20px rgba(0, 0, 0, 0.4)',
+    minWidth: '300px',
+    maxWidth: '500px',
     textAlign: 'center',
-    width: '90%',
-    maxWidth: '400px',
-    position: 'relative',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    boxShadow: '0 5px 25px rgba(0,0,0,0.5)',
   },
-  messageBoxTitle: {
-    color: '#ffffff',
-    fontSize: '1.5rem',
-    marginBottom: '10px',
-  },
-  messageBoxText: {
-    color: '#a0a0c0',
-    marginBottom: '20px',
-  },
+  messageBoxTitle: { fontSize: '1.5rem', marginBottom: '15px', color: '#fff' },
+  messageBoxText: { fontSize: '1rem', marginBottom: '10px', color: '#ddd' },
   messageBoxInput: {
     width: '100%',
-    padding: '10px',
-    backgroundColor: '#4a4a6e',
-    border: '1px solid #6a67f0',
+    padding: '8px',
+    marginBottom: '15px',
     borderRadius: '8px',
-    color: '#ffffff',
-    marginBottom: '20px',
-    outline: 'none',
+    border: '1px solid #555',
+    backgroundColor: '#2e2e4a',
+    color: '#fff',
+    fontSize: '1rem',
   },
   messageBoxButtons: {
     display: 'flex',
+    justifyContent: 'space-between',
     gap: '10px',
-    justifyContent: 'center',
-    width: '100%',
+    flexWrap: 'wrap',
   },
   messageBoxButton: {
-    padding: '12px 24px',
-    fontSize: '1rem',
-    fontWeight: 'bold',
-    color: '#ffffff',
-    backgroundColor: '#6a67f0',
+    flex: 1,
+    padding: '10px 15px',
     border: 'none',
     borderRadius: '8px',
     cursor: 'pointer',
-    transition: 'background-color 0.3s',
+    backgroundColor: '#6a67f0',
+    color: '#fff',
+    fontWeight: 'bold',
   },
 };
 
