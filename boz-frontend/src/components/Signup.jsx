@@ -10,29 +10,34 @@ const Signup = ({ onSignup }) => {
   const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+  e.preventDefault();
+  setError("");
 
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-      const now = new Date().toISOString();
-      await setDoc(doc(db, "users", user.uid), {
-        uid: user.uid,
-        name,
-        email,
-        createdAt: now,
-        lastLogin: now,
-        streak: 0,
-        role: "user",
-      });
+    const now = new Date().toISOString();
+    await setDoc(doc(db, "users", user.uid), {
+      uid: user.uid,
+      name,
+      email,
+      createdAt: now,
+      lastLogin: now,
+      streak: 0,
+      role: "user",
+    });
 
-      onSignup(user);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+    // ✅ Show popup before redirecting
+    alert(`Signup successful! Welcome, ${name}!`);
+
+    // Now trigger redirect
+    onSignup(user);
+  } catch (err) {
+    setError(err.message);
+  }
+};
+
 
   return (
     <div style={styles.cardContainer}>

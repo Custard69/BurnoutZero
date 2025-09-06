@@ -147,9 +147,15 @@ function App() {
   }, []);
 
   const handleLogout = async () => {
-    await signOut(auth);
-    setUser(null);
-  };
+  // ✅ Show logout confirmation popup
+  const confirmLogout = window.confirm("Are you sure you want to logout?");
+  if (!confirmLogout) return;
+
+  await signOut(auth);
+  alert("You have successfully logged out!");
+  setUser(null);
+};
+
 
   if (loading) return <p style={{ textAlign: "center", padding: "40px", color: "#c5c6c7" }}>Loading...</p>;
 

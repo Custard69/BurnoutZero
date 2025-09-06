@@ -11,133 +11,133 @@ const encouragingMessages = [
   "Amazing focus session! 🔥",
 ];
 
-// Helper styles object to keep the code clean
 const styles = {
-  container: {
-    textAlign: "center",
-    padding: "40px",
-    backgroundColor: "#1f2833",
-    borderRadius: "16px",
-    boxShadow: "0 8px 30px rgba(0, 0, 0, 0.5)",
-    maxWidth: "800px",
-    width: "100%",
-    margin: "40px auto", // Centers the container
-    color: "#c5c6c7",
-    fontFamily: "'Roboto', sans-serif"
-  },
-  heading: {
-    color: "#66fcf1",
-    fontWeight: "700",
-    letterSpacing: "1px"
-  },
-  timerDisplay: {
-    backgroundColor: "#000",
-    color: "#fff",
-    fontFamily: "'Orbitron', monospace",
-    fontSize: "80px",
-    fontWeight: "700",
-    padding: "10px 20px",
-    borderRadius: "15px",
-    margin: "20px 0",
-    display: "inline-block",
-    letterSpacing: "5px",
-    minWidth: "400px",
-    boxShadow: "inset 0 0 10px rgba(255, 255, 255, 0.1), 0 0 15px rgba(0, 0, 0, 0.5)",
-    textShadow: "0 0 5px #66fcf1"
-  },
-  inputField: {
-    backgroundColor: "#1f2833",
-    color: "#c5c6c7",
-    border: "1px solid #45a29e",
-    borderRadius: "8px",
-    padding: "12px 15px",
-    width: "250px",
-    marginBottom: "10px",
-    outline: "none"
-  },
-  inputNumber: {
-    backgroundColor: "#1f2833",
-    color: "#c5c6c7",
-    border: "1px solid #45a29e",
-    borderRadius: "8px",
-    padding: "12px 15px",
-    width: "60px",
-    marginRight: "15px",
-    outline: "none"
-  },
-  button: {
-    backgroundColor: "#45a29e",
-    color: "#0b0c10",
-    border: "none",
-    padding: "12px 24px",
-    margin: "5px",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontWeight: "700",
-    transition: "transform 0.2s, background-color 0.2s, box-shadow 0.3s"
-  },
-  buttonDisabled: {
-    backgroundColor: "#4a4a4a",
-    cursor: "not-allowed",
-    opacity: "0.6"
-  },
-  historyTable: {
-    width: "100%",
-    borderCollapse: "collapse",
-    marginTop: "20px",
-    boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)",
-    borderRadius: "8px",
-    overflow: "hidden", // Ensures border-radius applies to children
-  },
-  tableHeader: {
-    backgroundColor: "#2a3440",
-    color: "#66fcf1",
-    padding: "12px 15px",
-    textAlign: "left",
-    fontWeight: "bold",
-    borderBottom: "2px solid #45a29e",
-  },
-  tableRow: {
-    transition: "background-color 0.2s ease",
-  },
-  tableRowHover: {
-    backgroundColor: "#2a3440",
-  },
-  tableCell: {
-    padding: "12px 15px",
-    borderBottom: "1px solid #45a29e",
-    textAlign: "left",
-  },
-  popupOverlay: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100vw",
-    height: "100vh",
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1000
-  },
-  popupContent: {
-    background: "#1f2833",
-    padding: "40px",
-    borderRadius: "12px",
-    textAlign: "center",
-    boxShadow: "0 8px 30px rgba(0, 0, 0, 0.5)",
-    border: "1px solid #66fcf1"
-  },
-  closeButton: {
-    marginTop: "15px",
-    padding: "8px 15px",
-    backgroundColor: "#45a29e",
-    color: "#0b0c10",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer"
-  }
+  container: {
+    textAlign: "center",
+    padding: "40px",
+    backgroundColor: "#1f2833",
+    borderRadius: "16px",
+    boxShadow: "0 8px 30px rgba(0, 0, 0, 0.5)",
+    maxWidth: "800px",
+    width: "100%",
+    margin: "40px auto", // Centers the container
+    color: "#c5c6c7",
+    fontFamily: "'Roboto', sans-serif"
+  },
+  heading: {
+    color: "#66fcf1",
+    fontWeight: "700",
+    letterSpacing: "1px"
+  },
+  timerDisplay: {
+    backgroundColor: "#000",
+    color: "#fff",
+    fontFamily: "'Orbitron', monospace",
+    fontSize: "80px",
+    fontWeight: "700",
+    padding: "10px 20px",
+    borderRadius: "15px",
+    margin: "20px 0",
+    display: "inline-block",
+    letterSpacing: "5px",
+    minWidth: "400px",
+    boxShadow: "inset 0 0 10px rgba(255, 255, 255, 0.1), 0 0 15px rgba(0, 0, 0, 0.5)",
+    textShadow: "0 0 5px #66fcf1"
+  },
+  inputField: {
+    backgroundColor: "#1f2833",
+    color: "#c5c6c7",
+    border: "1px solid #45a29e",
+    borderRadius: "8px",
+    padding: "12px 15px",
+    width: "250px",
+    marginBottom: "10px",
+    outline: "none"
+  },
+  inputNumber: {
+    backgroundColor: "#1f2833",
+    color: "#c5c6c7",
+    border: "1px solid #45a29e",
+    borderRadius: "8px",
+    padding: "12px 15px",
+    width: "60px",
+    marginRight: "15px",
+    outline: "none"
+  },
+  button: {
+    backgroundColor: "#45a29e",
+    color: "#0b0c10",
+    border: "none",
+    padding: "12px 24px",
+    margin: "5px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "700",
+    transition: "transform 0.2s, background-color 0.2s, box-shadow 0.3s"
+  },
+  buttonDisabled: {
+    backgroundColor: "#4a4a4a",
+    cursor: "not-allowed",
+    opacity: "0.6"
+  },
+  historyTable: {
+    width: "100%",
+    borderCollapse: "collapse",
+    marginTop: "20px",
+    boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)",
+    borderRadius: "8px",
+    overflow: "hidden", // Ensures border-radius applies to children
+  },
+  tableHeader: {
+    backgroundColor: "#2a3440",
+    color: "#66fcf1",
+    padding: "12px 15px",
+    textAlign: "left",
+    fontWeight: "bold",
+    borderBottom: "2px solid #45a29e",
+  },
+  tableRow: {
+    transition: "background-color 0.2s ease",
+  },
+  tableRowHover: {
+    backgroundColor: "#2a3440",
+  },
+  tableCell: {
+    padding: "12px 15px",
+    borderBottom: "1px solid #45a29e",
+    textAlign: "left",
+  },
+  popupOverlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100vw",
+    height: "100vh",
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000
+  },
+  popupContent: {
+    background: "#1f2833",
+    padding: "40px",
+    borderRadius: "12px",
+    textAlign: "center",
+    boxShadow: "0 8px 30px rgba(0, 0, 0, 0.5)",
+    border: "1px solid #66fcf1"
+  },
+  closeButton: {
+    marginTop: "15px",
+    padding: "8px 15px",
+    backgroundColor: "#45a29e",
+    color: "#0b0c10",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer"
+  }
 };
+
 
 function FocusTimer() {
   const userId = auth.currentUser?.uid;
@@ -162,6 +162,7 @@ function FocusTimer() {
   const intervalRef = useRef(null);
   const timerTypeRef = useRef("focus");
   const endTimeRef = useRef(null);
+  const timeLeftOnPauseRef = useRef(null); // Ref to store timeLeft when paused
 
   useEffect(() => {
     if ("Notification" in window && Notification.permission !== "granted") {
@@ -184,23 +185,35 @@ function FocusTimer() {
         const data = docSnap.data();
         setTotalFocused(data.totalFocused || 0);
         setStreak(data.streak || 0);
+
         const sessions = (data.sessionHistory || []).map(s => ({
-          ...s,
-          timestamp: s.timestamp?.toDate ? s.timestamp.toDate() : new Date(s.timestamp)
+          task: s?.task || "...",
+          duration: s?.duration || 0,
+          timestamp: s?.timestamp?.toDate ? s.timestamp.toDate() : new Date(s?.timestamp) || new Date()
         }));
         setSessionHistory(sessions);
+
         if (data.activeSession) {
-          const { endTime, mode, task: savedTask } = data.activeSession;
-          const diff = Math.max(0, Math.round((endTime - Date.now()) / 1000));
-          if (diff > 0) {
-            setTimeLeft(diff);
-            setIsRunning(true);
+          const { endTime, mode, task: savedTask, status, timeLeft: savedTimeLeft } = data.activeSession;
+          if (status === "paused") {
+            setTimeLeft(savedTimeLeft || (mode === "break" ? breakMinutes * 60 : focusMinutes * 60));
+            setIsRunning(false);
             setOnBreak(mode === "break");
             setCurrentTask(savedTask || "");
             timerTypeRef.current = mode;
-            endTimeRef.current = endTime;
+            timeLeftOnPauseRef.current = savedTimeLeft;
           } else {
-            await updateDoc(docRef, { activeSession: null });
+            const diff = Math.max(0, Math.round((endTime - Date.now()) / 1000));
+            if (diff > 0) {
+              setTimeLeft(diff);
+              setIsRunning(true);
+              setOnBreak(mode === "break");
+              setCurrentTask(savedTask || "");
+              timerTypeRef.current = mode;
+              endTimeRef.current = endTime;
+            } else {
+              await updateDoc(docRef, { activeSession: null });
+            }
           }
         }
       }
@@ -211,15 +224,17 @@ function FocusTimer() {
   useEffect(() => {
     if (isRunning) {
       intervalRef.current = setInterval(() => {
+        if (!endTimeRef.current) return;
         const diff = Math.max(0, Math.round((endTimeRef.current - Date.now()) / 1000));
         setTimeLeft(diff);
         if (diff <= 0) {
           clearInterval(intervalRef.current);
           endTimeRef.current = null;
           setIsRunning(false);
+
           if (timerTypeRef.current === "focus") {
             const newSession = {
-              task: currentTask,
+              task: currentTask || "...",
               duration: focusMinutes * 60,
               timestamp: new Date(),
             };
@@ -227,10 +242,12 @@ function FocusTimer() {
             setSessionHistory(h => [...h, newSession]);
             setStreak(s => s + 1);
             saveSessionToFirestore(newSession);
+
             const randomMessage = encouragingMessages[Math.floor(Math.random() * encouragingMessages.length)];
             setPopupMessage(randomMessage);
             setShowPopup(true);
             sendNotification("Focus session complete!", "Time for a short break 🛌");
+
             setOnBreak(true);
             setTimeLeft(breakMinutes * 60);
             timerTypeRef.current = "break";
@@ -242,6 +259,7 @@ function FocusTimer() {
             setShowPopup(true);
             sendNotification("Break over!", "Time to start your next focus session 💪");
           }
+
           if (userId) {
             updateDoc(doc(db, "focusTimers", userId), { activeSession: null });
           }
@@ -277,47 +295,63 @@ function FocusTimer() {
   };
 
   const startTimer = async () => {
-  if (!task && !onBreak) {
-    setPopupMessage("Please enter a task before starting!");
-    setShowPopup(true);
-    return;
-  }
+    if (!task && !onBreak && !timeLeftOnPauseRef.current) {
+      setPopupMessage("Please enter a task before starting!");
+      setShowPopup(true);
+      return;
+    }
 
-  if (!isRunning) {
-    setCurrentTask(task);
-    timerTypeRef.current = onBreak ? "break" : "focus";
+    if (!isRunning) {
+      setCurrentTask(task);
+      timerTypeRef.current = onBreak ? "break" : "focus";
 
-    // Use current user selection instead of previous timeLeft
-    const duration = (onBreak ? breakMinutes : focusMinutes) * 60;
-    setTimeLeft(duration);
-    endTimeRef.current = Date.now() + duration * 1000;
+      const duration = timeLeftOnPauseRef.current || (onBreak ? breakMinutes : focusMinutes) * 60;
+      setTimeLeft(duration);
+      endTimeRef.current = Date.now() + duration * 1000;
+      timeLeftOnPauseRef.current = null; // Clear pause time on start/resume
 
-    setIsRunning(true);
+      setIsRunning(true);
+
+      if (userId) {
+        const docRef = doc(db, "focusTimers", userId);
+        const updateData = {
+          activeSession: {
+            endTime: endTimeRef.current,
+            mode: timerTypeRef.current,
+            task: onBreak ? "" : task,
+            status: "active",
+          },
+        };
+        try {
+          await updateDoc(docRef, updateData);
+        } catch (err) {
+          await setDoc(docRef, {
+            totalFocused: 0,
+            streak: 0,
+            sessionHistory: [],
+            ...updateData,
+          });
+        }
+      }
+    }
+  };
+
+  const pauseTimer = async () => {
+    setIsRunning(false);
+    timeLeftOnPauseRef.current = timeLeft; // Save the remaining time
 
     if (userId) {
       const docRef = doc(db, "focusTimers", userId);
       await updateDoc(docRef, {
         activeSession: {
-          endTime: endTimeRef.current,
+          timeLeft: timeLeft,
           mode: timerTypeRef.current,
-          task: onBreak ? "" : task,
-        },
-      }).catch(async () => {
-        await setDoc(docRef, {
-          totalFocused: 0,
-          streak: 0,
-          sessionHistory: [],
-          activeSession: {
-            endTime: endTimeRef.current,
-            mode: timerTypeRef.current,
-            task: onBreak ? "" : task,
-          },
-        });
+          task: currentTask,
+          status: "paused",
+        }
       });
     }
-  }
-};
-  const pauseTimer = () => setIsRunning(false);
+  };
 
   const resetTimer = async () => {
     setIsRunning(false);
@@ -327,6 +361,7 @@ function FocusTimer() {
     setCurrentTask("");
     timerTypeRef.current = "focus";
     endTimeRef.current = null;
+    timeLeftOnPauseRef.current = null;
     if (userId) {
       const docRef = doc(db, "focusTimers", userId);
       await updateDoc(docRef, { activeSession: null });
@@ -347,6 +382,7 @@ function FocusTimer() {
       return { day: d.toLocaleDateString("en-US", { weekday: "short" }), totalHours: 0 };
     });
     sessionHistory.forEach((s) => {
+      if (!s || !s.timestamp) return;
       const date = new Date(s.timestamp);
       const dayIndex = (date.getDay() + 6) % 7;
       const matchingDay = days[dayIndex];
@@ -387,18 +423,24 @@ function FocusTimer() {
               </tr>
             </thead>
             <tbody>
-              {sessionHistory.map((s, i) => (
-                <tr key={i} style={styles.tableRow}>
-                  <td style={styles.tableCell}>{s.task}</td>
-                  <td style={styles.tableCell}>{formatTime(s.duration)}</td>
-                  <td style={styles.tableCell}>{s.timestamp.toLocaleTimeString()}</td>
-                </tr>
-              ))}
+              {sessionHistory.map((s, i) => {
+                if (!s) return null;
+                const task = s.task || "...";
+                const duration = s.duration || 0;
+                const timestamp = s.timestamp ? new Date(s.timestamp) : new Date();
+                return (
+                  <tr key={i} style={styles.tableRow}>
+                    <td style={styles.tableCell}>{task}</td>
+                    <td style={styles.tableCell}>{formatTime(duration)}</td>
+                    <td style={styles.tableCell}>{timestamp.toLocaleTimeString()}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}
         {showHistory && sessionHistory.length === 0 && (
-          <p style={{marginTop: "20px"}}>No sessions yet</p>
+          <p style={{ marginTop: "20px" }}>No sessions yet</p>
         )}
       </div>
       <div style={{ marginTop: "40px", width: "100%", maxWidth: "700px", margin: "0 auto", height: 250 }}>

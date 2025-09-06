@@ -9,41 +9,46 @@ const Login = ({ onLogin }) => {
   const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+  e.preventDefault();
+  setError("");
 
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+  try {
+  const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  const user = userCredential.user;
 
-      const userRef = doc(db, "users", user.uid);
-      const userDoc = await getDoc(userRef);
+  const userRef = doc(db, "users", user.uid);
+  const userDoc = await getDoc(userRef);
 
-      let userData;
+  let userData;
 
-      if (userDoc.exists()) {
-        userData = userDoc.data();
-        await updateDoc(userRef, {
-          lastLogin: new Date().toISOString(),
-        });
-        userData = { ...userData, lastLogin: new Date().toISOString() };
-      } else {
-        userData = {
-          email: user.email,
-          createdAt: new Date().toISOString(),
-          lastLogin: new Date().toISOString(),
-          streak: 0,
-          role: "user",
-        };
-        await setDoc(userRef, userData);
-      }
+  if (userDoc.exists()) {
+    userData = userDoc.data();
+    await updateDoc(userRef, {
+      lastLogin: new Date().toISOString(),
+    });
+    userData = { ...userData, lastLogin: new Date().toISOString() };
+  } else {
+    userData = {
+      email: user.email,
+      createdAt: new Date().toISOString(),
+      lastLogin: new Date().toISOString(),
+      streak: 0,
+      role: "user",
+    };
+    await setDoc(userRef, userData);
+  }
 
-      onLogin({ ...user, profile: userData });
+  // ✅ Show welcome popup before redirecting
+  alert(`Login successful! Welcome back, ${userData.name || "User"}!`);
 
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+  onLogin({ ...user, profile: userData });
+} catch (err) {
+  // Custom error message
+  setError("Invalid credentials");
+}
+
+};
+
 
   return (
     <div style={styles.cardContainer}>
@@ -159,11 +164,18 @@ const styles = {
     transition: 'background 0.3s ease, transform 0.2s ease',
   },
   error: {
-    color: '#ff6b6b',
-    marginTop: '20px',
-    fontSize: '0.9rem',
-    textAlign: 'center',
-  },
+  color: '#ff4c4c',            // red text
+  fontWeight: '600',            // semi-bold
+  fontSize: '0.9rem',
+  textAlign: 'center',
+  marginTop: '12px',
+  border: '1px solid #ff4c4c', // thin red border
+  borderRadius: '4px',
+  padding: '6px 10px',
+  backgroundColor: 'rgba(255, 76, 76, 0.1)' // very light red bg
+}
+
+,
 };
 
 export default Login;
