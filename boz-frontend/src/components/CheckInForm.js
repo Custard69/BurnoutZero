@@ -30,7 +30,7 @@ function CheckInForm() {
     };
 
     try {
-      // 1️⃣ Save check-in to backend
+      // 1️ Save check-in to backend
       const res = await fetch("http://127.0.0.1:5000/checkin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -40,7 +40,7 @@ function CheckInForm() {
       console.log("Check-in Response:", data);
       setMessage("✅ Check-in submitted and saved!");
 
-      // 2️⃣ Fetch last 7 check-ins from Firestore
+      // 2️ Fetch last 7 check-ins from Firestore
       const q = query(
         collection(db, "checkins"),
         where("user_id", "==", user.uid),
@@ -51,7 +51,7 @@ function CheckInForm() {
       const lastCheckins = [];
       querySnapshot.forEach((doc) => lastCheckins.push(doc.data()));
 
-      // 3️⃣ Calculate features from last 7 check-ins
+      // 3️ Calculate features from last 7 check-ins
       const days = lastCheckins.length || 1;
       const sum = lastCheckins.reduce((acc, c) => ({
         mood: acc.mood + c.mood,
@@ -76,7 +76,7 @@ function CheckInForm() {
         mean_work_hours_last_7d: sum.work_hours / days
       };
 
-      // 4️⃣ Call prediction API
+      // 4️ Call prediction API
       const predRes = await fetch("http://127.0.0.1:5000/predict", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

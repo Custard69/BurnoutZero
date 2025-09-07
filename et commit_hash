@@ -1,0 +1,95 @@
+[33mcommit b0d6a55ccc7792cbb93e00bb8e0af78132f840a7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Custard69 <xevondj@gmail.com>
+Date:   Sun Sep 7 05:22:51 2025 +0530
+
+    Calendar popups fix
+
+[33mcommit f4ea911bf7118e665fd5472eba32a57f77d83aa7[m
+Author: Custard69 <xevondj@gmail.com>
+Date:   Sat Sep 6 20:51:04 2025 +0530
+
+    UI Refined
+
+[33mcommit 2c34af6df3c30c56d9a458fca268d7acf16d9bed[m
+Author: Custard69 <xevondj@gmail.com>
+Date:   Fri Sep 5 17:43:08 2025 +0530
+
+    small update in calendar loading
+
+[33mcommit f63f7bdf436ac6b17d831ade8a493a2967cd1f28[m
+Author: Custard69 <xevondj@gmail.com>
+Date:   Tue Sep 2 19:50:44 2025 +0530
+
+    small update in clalendar to show event times
+
+[33mcommit 8b97ec0aa60240df20093a1988a2f34db72ddb2e[m
+Author: Custard69 <xevondj@gmail.com>
+Date:   Tue Sep 2 11:38:41 2025 +0530
+
+    focus timer works
+
+[33mcommit 3cda5fe6b9fad173432b38f2b8e80cca60fed2da[m
+Author: Custard69 <xevondj@gmail.com>
+Date:   Mon Sep 1 16:07:00 2025 +0530
+
+    bit more polishing was done to the front end
+
+[33mcommit c9baa5edcfa6c70386a5871e611c1768ccbf8b60[m
+Author: Custard69 <xevondj@gmail.com>
+Date:   Mon Sep 1 00:55:19 2025 +0530
+
+    calendar features work and prediction now use passive data from the calendar
+
+[33mcommit cf1d04e6a00ff7c38148c79cf63b2443480ff5e5[m
+Author: Custard69 <xevondj@gmail.com>
+Date:   Sun Aug 31 17:24:24 2025 +0530
+
+    google calendar api works and added events are displayed
+
+[33mcommit cc997c843aaacc0efd9219e83842cee1d1314ba3[m
+Author: Custard69 <xevondj@gmail.com>
+Date:   Fri Aug 29 02:31:55 2025 +0530
+
+    burnout model 3 is intergrated and burnout prediction works and its displayed in the graph
+
+[33mcommit d02e16ccfa9b4d9f5f942794959405d2cc666d56[m
+Author: Custard69 <xevondj@gmail.com>
+Date:   Wed Aug 27 13:24:29 2025 +0530
+
+    1st prototype model works and prdicts burnout accuracy but not all features are considered
+
+[33mcommit 5900b4324f78abc8521baae19beda5d8d9f8c89a[m
+Author: Custard69 <xevondj@gmail.com>
+Date:   Tue Aug 26 00:10:19 2025 +0530
+
+    data fetched by user id works
+
+[33mcommit d04ca343341b9de0b65594d73319c0af32e6a8a5[m
+Author: Custard69 <xevondj@gmail.com>
+Date:   Sat Aug 23 23:23:55 2025 +0530
+
+    fixed the missing values in signup and removed them from login
+
+[33mcommit 3c7812c803f0e16a40b8b2e004439fcd0b4f8717[m
+Author: Custard69 <xevondj@gmail.com>
+Date:   Sat Aug 23 22:14:45 2025 +0530
+
+    login , signup works with lates login time updates
+
+[33mcommit 0d546047aee47f61b47ba6022b502c654f7ab906[m
+Author: Custard69 <xevondj@gmail.com>
+Date:   Fri Aug 22 15:34:30 2025 +0530
+
+    installed firebase sdk before starting auth
+
+[33mcommit 1a677b77f07962b774a7eddb0e204f0027325bc8[m
+Author: Custard69 <xevondj@gmail.com>
+Date:   Fri Aug 22 13:44:17 2025 +0530
+
+    Save working version before timestamp changes
+
+[33mcommit ba177e00d48193eb076404f897cce2eb1c0e165e[m
+Author: Custard69 <xevondj@gmail.com>
+Date:   Fri Aug 22 13:39:53 2025 +0530
+
+    grpah works

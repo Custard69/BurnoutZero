@@ -20,37 +20,27 @@ from googleapiclient.discovery import build
 
 load_dotenv()
 
-# ---------------------------
 # Flask setup
-# ---------------------------
 app = Flask(__name__)
 CORS(app)
 app.secret_key = os.getenv("FLASK_SECRET_KEY")
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
-
-# ---------------------------
-# Google API credentials
-# ---------------------------
 # Get credentials from environment variables
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 GOOGLE_REDIRECT_URI = "http://localhost:5000/callback/google"
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 
-# ---------------------------
 # RescueTime API Key
-# ---------------------------
 RESCUETIME_API_KEY = os.getenv("RESCUETIME_API_KEY")
-# ---------------------------
+
 # Load the scaler and model
-# ---------------------------
 scaler = joblib.load("artifacts/burnout_scaler_final.pkl")
 model = joblib.load("artifacts/burnout_model_multiclass_final.pkl")
 
-# ---------------------------
+
 # Initialize Firebase
-# ---------------------------
 cred = credentials.Certificate("firebase_key.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
@@ -483,8 +473,8 @@ def get_calendar_events():
         
         events_result = service.events().list(
             calendarId="primary",
-            timeMin=now,              # start from NOW
-            maxResults=200,           # get enough results
+            timeMin=now,              
+            maxResults=200,           
             singleEvents=True,
             orderBy="startTime"
         ).execute()
